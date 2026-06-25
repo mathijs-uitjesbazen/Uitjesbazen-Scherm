@@ -1,0 +1,331 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  #app {
+    background: linear-gradient(160deg, #B52890 0%, #A62482 60%, #8a1d6b 100%);
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Ubuntu', sans-serif;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 3px solid #F7A940;
+    flex-shrink: 0;
+  }
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-img { height: 48px; width: auto; object-fit: contain; }
+  .logo-fallback { display: flex; align-items: center; gap: 8px; }
+  .logo-fallback .wordmark { font-size: 24px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+  .header-center { text-align: center; }
+  .header-dayname { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+  .header-fulldate { font-size: 20px; font-weight: 700; }
+  .header-right { text-align: right; }
+  .header-time { font-size: 42px; font-weight: 700; color: #F7A940; font-variant-numeric: tabular-nums; line-height: 1; }
+  .header-week { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-top: 2px; }
+
+  .main { flex: 1; display: grid; grid-template-columns: 1fr 260px; min-height: 0; }
+
+  .trips-col { padding: 24px 28px; display: flex; flex-direction: column; gap: 0; }
+  .trips-title { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+  .trips-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .trip-row {
+    display: flex; align-items: stretch;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .guide-block {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; padding: 14px 16px; min-width: 90px;
+    background: rgba(0,0,0,0.15);
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .guide-photo {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 2px solid rgba(247,169,64,0.5);
+    background: rgba(247,169,64,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #F7A940;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .guide-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .guide-name { font-size: 11px; color: rgba(255,255,255,0.7); text-align: center; line-height: 1.2; max-width: 72px; word-break: break-word; }
+
+  .trip-details { flex: 1; padding: 14px 20px; display: flex; flex-direction: column; gap: 5px; }
+  .trip-activity-name { font-size: 18px; font-weight: 700; color: white; line-height: 1.2; }
+  .trip-info-line { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 2px; }
+  .trip-info-item { display: flex; align-items: center; gap: 5px; font-size: 13px; color: rgba(255,255,255,0.6); }
+  .trip-info-item i { font-size: 14px; }
+  .trip-client { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 3px; }
+
+  .busje-block {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 14px 20px; background: #F7A940; min-width: 96px; gap: 4px;
+  }
+  .busje-block.no-bus { background: rgba(0,0,0,0.15); }
+  .busje-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(100,50,0,0.7); }
+  .busje-num { font-size: 20px; font-weight: 700; color: #5a2d00; line-height: 1; text-align: center; }
+  .busje-time { font-size: 12px; color: rgba(90,45,0,0.7); margin-top: 2px; }
+  .busje-time-only { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.4); }
+
+  .no-trips { padding: 48px 20px; text-align: center; color: rgba(255,255,255,0.25); font-size: 16px; }
+
+  .sidebar { background: rgba(0,0,0,0.2); border-left: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; padding: 24px 20px; gap: 20px; }
+  .sidebar-block { display: flex; flex-direction: column; gap: 10px; }
+  .sidebar-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; }
+
+  .stat-item { display: flex; justify-content: space-between; align-items: baseline; }
+  .stat-label { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .stat-value { font-size: 26px; font-weight: 700; color: #F7A940; line-height: 1; }
+
+  .week-rows { display: flex; flex-direction: column; gap: 4px; }
+  .week-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 6px; font-size: 12px; }
+  .week-row.today { background: rgba(247,169,64,0.15); border: 1px solid rgba(247,169,64,0.25); }
+  .week-row-day { color: rgba(255,255,255,0.55); min-width: 40px; }
+  .week-row-count { font-weight: 700; color: #F7A940; }
+  .week-row-count.none { color: rgba(255,255,255,0.2); font-weight: 400; }
+
+  .weather-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
+  .weather-cell { background: rgba(255,255,255,0.06); border-radius: 7px; padding: 7px 3px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .weather-cell.today { background: rgba(247,169,64,0.18); border: 1px solid rgba(247,169,64,0.3); }
+  .wc-day { font-size: 9px; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+  .wc-icon { font-size: 18px; line-height: 1.2; }
+  .wc-temp { font-size: 13px; font-weight: 700; }
+  .wc-rain { font-size: 9px; color: rgba(255,255,255,0.4); }
+
+  .sales-placeholder { background: rgba(247,169,64,0.07); border: 1px dashed rgba(247,169,64,0.25); border-radius: 8px; padding: 12px; text-align: center; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+
+  .footer { background: rgba(0,0,0,0.3); padding: 6px 32px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: rgba(255,255,255,0.25); flex-shrink: 0; }
+  .live-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 5px; }
+</style>
+
+<div id="app">
+  <div class="header">
+    <div class="logo-area">
+      <img src="logo.png" class="logo-img" onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex';" alt="Uitjesbazen logo">
+      <div class="logo-fallback" id="logo-fallback" style="display:flex;">
+        <span style="font-size:28px;">👑</span>
+        <span class="wordmark">Uitjesbazen</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="header-dayname" id="h-dayname"></div>
+      <div class="header-fulldate" id="h-fulldate"></div>
+    </div>
+    <div class="header-right">
+      <div class="header-time" id="h-time">--:--</div>
+      <div class="header-week" id="h-week">WEEK -</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="trips-col">
+      <div class="trips-title" id="trips-title">Uitjes vandaag</div>
+      <div class="trips-list" id="trips-list">
+        <div class="no-trips">Laden...</div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-title">Vandaag</div>
+        <div class="stat-item">
+          <span class="stat-label">Uitjes</span>
+          <span class="stat-value" id="s-today">-</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Personen</span>
+          <span class="stat-value" id="s-persons">-</span>
+        </div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">Deze week</div>
+        <div class="week-rows" id="week-rows"></div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">Weer</div>
+        <div class="weather-grid" id="weather-grid">
+          <div style="grid-column:1/-1;text-align:center;color:rgba(255,255,255,0.25);font-size:11px;">laden...</div>
+        </div>
+      </div>
+      <div class="sidebar-block">
+        <div class="sidebar-title">Sales deze week</div>
+        <div class="sales-placeholder">Koppeling met HubSpot<br>volgt in volgende stap</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span><span class="live-dot"></span>Live via Google Sheets · vernieuwd elke minuut</span>
+    <span id="f-refresh">-</span>
+  </div>
+</div>
+
+<script>
+const SHEET_ID = '1vPsIEhPX3dvUik9BKSzvahqOroo7b40DhilmzXkrYVo';
+const DAYS_NL = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','zaterdag'];
+const MONTHS_NL = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+const SHORT_DAYS = ['zo','ma','di','wo','do','vr','za'];
+let allRows = [];
+
+function getWeekNum(d) {
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  dt.setDate(dt.getDate() + 3 - (dt.getDay()+6)%7);
+  const w1 = new Date(dt.getFullYear(),0,4);
+  return 1 + Math.round(((dt-w1)/86400000 - 3 + (w1.getDay()+6)%7)/7);
+}
+function getMon(d) {
+  const dt = new Date(d); dt.setHours(0,0,0,0);
+  dt.setDate(dt.getDate() + (dt.getDay()===0 ? -6 : 1-dt.getDay()));
+  return dt;
+}
+function sameDay(a,b) { return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+function initials(n) {
+  const p=(n||'').trim().split(' ');
+  return p.length>=2?(p[0][0]+p[p.length-1][0]).toUpperCase():(n||'?').substring(0,2).toUpperCase();
+}
+function updateClock() {
+  const now = new Date();
+  document.getElementById('h-time').textContent = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('h-dayname').textContent = DAYS_NL[now.getDay()].toUpperCase();
+  document.getElementById('h-fulldate').textContent = now.getDate()+' '+MONTHS_NL[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('h-week').textContent = 'WEEK '+getWeekNum(now);
+}
+async function fetchSheet() {
+  const now = new Date();
+  const tab = MONTHS_NL[now.getMonth()].charAt(0).toUpperCase()+MONTHS_NL[now.getMonth()].slice(1)+' '+now.getFullYear();
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}`;
+  try {
+    const r = await fetch(url);
+    const t = await r.text();
+    return JSON.parse(t.substring(47,t.length-2)).table;
+  } catch(e) { return null; }
+}
+function parseRows(table) {
+  if (!table||!table.rows) return [];
+  return table.rows.map(row => {
+    const c = row.c||[];
+    const v = i => c[i]&&c[i].v!=null ? c[i].v : (c[i]&&c[i].f ? c[i].f : '');
+    const f = i => c[i]&&c[i].f ? c[i].f : '';
+    // C=2 datum, E=4 plaats, F=5 activiteit, J=9 tijd, K=10 spelleider, M=12 busje
+    const dr = v(2);
+    let dateObj = null;
+    if (typeof dr==='string'&&dr.toLowerCase().startsWith('date(')) {
+      const p=dr.replace('Date(','').replace(')','').split(',');
+      if(p.length>=3) dateObj=new Date(+p[0],+p[1],+p[2]);
+    }
+    const timeRaw = v(9);
+    let timeStr = f(9) || '';
+    if (!timeStr && typeof timeRaw==='number') {
+      const mins = Math.round(timeRaw*24*60);
+      timeStr = Math.floor(mins/60).toString().padStart(2,'0')+':'+(mins%60).toString().padStart(2,'0');
+    }
+    const name = v(1);
+    return {
+      dateObj,
+      name,
+      place:    v(4),
+      activity: v(5),
+      persons:  parseInt(v(7))||0,
+      time:     timeStr,
+      spelleider: v(10),
+      busje:    v(12)
+    };
+  }).filter(r=>r.dateObj&&r.name);
+}
+function renderTrips() {
+  const now = new Date();
+  const todayRows = allRows.filter(r=>sameDay(r.dateObj,now)).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  document.getElementById('s-today').textContent = todayRows.length;
+  document.getElementById('s-persons').textContent = todayRows.reduce((s,r)=>s+r.persons,0)||'-';
+  document.getElementById('trips-title').textContent = 'uitjes vandaag. '+DAYS_NL[now.getDay()]+' '+now.getDate()+' '+MONTHS_NL[now.getMonth()];
+  if (!todayRows.length) {
+    document.getElementById('trips-list').innerHTML = '<div class="no-trips">Geen uitjes gepland vandaag</div>';
+    return;
+  }
+  document.getElementById('trips-list').innerHTML = todayRows.map(t => {
+    const init = initials(t.spelleider||t.name);
+    const slug = (t.spelleider||'').toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+    const photoHtml = slug
+      ? `<img src="photos/${slug}.jpg" alt="${t.spelleider}" onerror="this.parentElement.innerHTML='${init}'">`
+      : init;
+    const busjeHtml = t.busje
+      ? `<div class="busje-block">
+           <div class="busje-label">Busje</div>
+           <div class="busje-num">${t.busje}</div>
+           ${t.time ? `<div class="busje-time">${t.time}</div>` : ''}
+         </div>`
+      : `<div class="busje-block no-bus">
+           ${t.time ? `<div class="busje-time-only">${t.time}</div>` : ''}
+         </div>`;
+    return `<div class="trip-row">
+      <div class="guide-block">
+        <div class="guide-photo">${photoHtml}</div>
+        <div class="guide-name">${t.spelleider||t.name}</div>
+      </div>
+      <div class="trip-details">
+        <div class="trip-activity-name">${t.activity||'Uitje'}</div>
+        <div class="trip-info-line">
+          ${t.place?`<span class="trip-info-item"><i class="ti ti-map-pin" aria-hidden="true"></i>${t.place}</span>`:''}
+          ${t.persons?`<span class="trip-info-item"><i class="ti ti-users" aria-hidden="true"></i>${t.persons} personen</span>`:''}
+        </div>
+        <div class="trip-client">${t.name}</div>
+      </div>
+      ${busjeHtml}
+    </div>`;
+  }).join('');
+}
+function renderWeek() {
+  const now = new Date();
+  const mon = getMon(now);
+  document.getElementById('week-rows').innerHTML = Array.from({length:5},(_,i)=>{
+    const d = new Date(mon); d.setDate(mon.getDate()+i);
+    const cnt = allRows.filter(r=>sameDay(r.dateObj,d)).length;
+    const td = sameDay(d,now);
+    return `<div class="week-row ${td?'today':''}">
+      <span class="week-row-day">${SHORT_DAYS[d.getDay()]} ${d.getDate()}</span>
+      <span class="week-row-count ${cnt===0?'none':''}">${cnt||'.'}</span>
+    </div>`;
+  }).join('');
+}
+async function fetchWeather() {
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.5&longitude=5.45&daily=weathercode,temperature_2m_max,precipitation_probability_max&timezone=Europe/Amsterdam&forecast_days=5');
+    const d = await r.json();
+    const icon = c => c===0?'☀️':c<=3?'⛅':c<=48?'🌫️':c<=67?'🌧️':c<=77?'❄️':c<=82?'🌦️':'⛈️';
+    const now = new Date();
+    document.getElementById('weather-grid').innerHTML = d.daily.time.map((dt,i)=>{
+      const day=new Date(dt);
+      return `<div class="weather-cell ${sameDay(day,now)?'today':''}">
+        <div class="wc-day">${SHORT_DAYS[day.getDay()]}</div>
+        <div class="wc-icon">${icon(d.daily.weathercode[i])}</div>
+        <div class="wc-temp">${Math.round(d.daily.temperature_2m_max[i])}°</div>
+        <div class="wc-rain">${d.daily.precipitation_probability_max[i]}%</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+async function refresh() {
+  const table = await fetchSheet();
+  if (table) {
+    allRows = parseRows(table);
+    renderTrips();
+    renderWeek();
+    document.getElementById('f-refresh').textContent = 'Vernieuwd: '+new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+updateClock();
+setInterval(updateClock,1000);
+fetchWeather();
+refresh();
+setInterval(refresh,60000);
+setInterval(fetchWeather,3600000);
+</script>
