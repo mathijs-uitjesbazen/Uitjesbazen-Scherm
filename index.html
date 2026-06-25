@@ -215,7 +215,7 @@ function parseRows(table) {
     const c = row.c||[];
     const v = i => c[i]&&c[i].v!=null ? c[i].v : (c[i]&&c[i].f ? c[i].f : '');
     const f = i => c[i]&&c[i].f ? c[i].f : '';
-    // C=2 datum, E=4 plaats, F=5 activiteit, J=9 tijd, K=10 spelleider, M=12 busje
+    // Excel Kolomen C=2 datum, E=4 plaats, F=5 activiteit, J=9 tijd, K=10 spelleider, M=12 busje
     const dr = v(2);
     let dateObj = null;
     if (typeof dr==='string'&&dr.toLowerCase().startsWith('date(')) {
